@@ -41,7 +41,7 @@ def getInput():
     return m, n
 
 
-def isPrime(num, primesIn):
+def isPrime(num, primes):
     """Test if a number is prime using a naive primes algorithm
     
     Arguments:
@@ -49,20 +49,17 @@ def isPrime(num, primesIn):
          primesIn -- List of known primes. Include at least 1 and 2 in this list
     Returns a boolean
     """
-    # Make a copy of the primes list so that we can remove '1' from it later
-    primes = list(primesIn)
-    
      #if it's in the list of primes, it must be prime, right?
     if num in primes: return True
 
     # if it's divisible by any primes(except 1), it's not prime
-    primes.remove(1)
-    for x in primes:
+    testablePrimes = set(primes).intersection(xrange(2, int(math.sqrt(num))))
+    for x in testablePrimes:
         if isEvenDiv(num, x): return False
 
     # Testing against all other odd numbers up to sqrt(num)
     # (assuming primes contains all primes sequentially, and it doesn't end in '2')
-    for x in range(max(primes), int(math.sqrt(num)), 2):
+    for x in xrange(max(primes), int(math.sqrt(num)), 2):
         if isEvenDiv(num, x): return False
 
     # if it made it this far, it must be prime
@@ -84,12 +81,12 @@ def findPrimes(start, finish):
         returnablePrimes = list(rangeSet.intersection(primesSet))
         return returnablePrimes
 
-    # find all the primes, from known up to m
-    for x in range(max(primes), start):
+    # find all the primes, from known up to sqrt(m)
+    for x in xrange(max(primes), int(math.sqrt(start))):
         if isPrime(x, primes): primes += [x]
 
     # Test for primes from m to n
-    for x in range(start, finish+1):
+    for x in xrange(start, finish+1):
         if isPrime(x, primes):
             if x not in primes: primes += [x]
             returnablePrimes += [x]
